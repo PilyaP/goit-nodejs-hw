@@ -49,14 +49,20 @@ const signup = async (req, res) => {
 };
 
 const signin = async (req, res) => {
-  const { email, password, subscription } = req.body;
+  const { email, password } = req.body;
+
   const user = await User.findOne({ email });
+
   if (!user) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
+  if (!user.verify) {
+    throw HttpError(401, "Email not verified");
+  }
+
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password invalid");
+    throw HttpError(401, "Email or password is wrong");
   }
 
   const payload = {
