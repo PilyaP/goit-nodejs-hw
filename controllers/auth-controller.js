@@ -164,20 +164,17 @@ const resendVerifyEmail = async (req, res) => {
       .json({ message: "Verification has already been passed" });
   }
 
-  const verificationToken = nanoid();
-  user.verificationToken = verificationToken;
-  await user.save();
-
   const mail = {
     to: email,
     subject: "Email confirmation",
-    html: `<a target="_blank" href='${BASE_URL}/users/verify/${verificationToken}'>Hello! Please, click this link to confirm your email</a>`,
+    html: `<a target="_blank" href='${BASE_URL}/users/verify/${user.verificationToken}'>Hello! Please, click this link to confirm your email</a>`,
   };
 
   await sendMail(mail);
 
   res.status(200).json({ message: "Verification email sent" });
 };
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
